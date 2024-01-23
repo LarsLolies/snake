@@ -4,7 +4,33 @@ import java.util.ArrayList.*;
 import java.util.Random;
 import javax.swing.*;
 
-public class SnakeGame extends JPanel{
+public class SnakeGame extends JPanel implements ActionListener, KeyListener{
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        move();
+        repaint();
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()== KeyEvent.VK_UP && velocityY !=1){
+            velocityX = 0;
+            velocityY = -1;
+        }
+        else if(e.getKeyCode()== KeyEvent.VK_DOWN && velocityY != -1){
+            velocityX = 0;
+            velocityY = 1;
+        }
+        else if(e.getKeyCode()== KeyEvent.VK_LEFT && velocityX != 1){
+            velocityX = -1;
+            velocityY = 0;
+        }
+        else if(e.getKeyCode()== KeyEvent.VK_RIGHT && velocityX != -1){
+            velocityX = 1;
+            velocityY = 0;
+        }
+    }
+
     private class Tile{
         int x;
         int y;
@@ -24,17 +50,31 @@ public class SnakeGame extends JPanel{
 
     Random random;
 
+    Timer gameLoop;
+    int velocityX;
+    int velocityY;
+
 
     SnakeGame(int boarsWidth, int boardHeight){
      this.boarsWidth=boarsWidth;
      this.boardHeight=boardHeight;
      setPreferredSize(new Dimension(this.boarsWidth, this.boardHeight));
      setBackground(Color.black);
+     addKeyListener(this);
+     setFocusable(true);
+
+
      this.snakeHead = new Tile(5,5);
      this.food = new Tile(10, 10);
      random = new Random();
      placeFood();
 
+     this.velocityX = 0;
+     this.velocityY = 1;
+
+
+     gameLoop = new Timer(100,this);
+     gameLoop.start();
     }
 
 
@@ -65,5 +105,17 @@ public class SnakeGame extends JPanel{
         food.y=random.nextInt(boardHeight/tileSize);
     }
 
+    public void move(){
+        snakeHead.x += velocityX;
+        snakeHead.y += velocityY;
+    }
 
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
 }
