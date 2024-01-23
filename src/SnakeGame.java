@@ -10,6 +10,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     public void actionPerformed(ActionEvent e) {
         move();
         repaint();
+        if(gameOver){
+            gameLoop.stop();
+        }
     }
 
     @Override
@@ -41,7 +44,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         }
     }
 
-    int boarsWidth;
+    int boardWidth;
     int boardHeight;
     int tileSize=25;
 
@@ -57,11 +60,13 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     int velocityX;
     int velocityY;
 
+    boolean gameOver = false;
+
 
     SnakeGame(int boarsWidth, int boardHeight){
-     this.boarsWidth=boarsWidth;
+     this.boardWidth=boarsWidth;
      this.boardHeight=boardHeight;
-     setPreferredSize(new Dimension(this.boarsWidth, this.boardHeight));
+     setPreferredSize(new Dimension(this.boardWidth, this.boardHeight));
      setBackground(Color.black);
      addKeyListener(this);
      setFocusable(true);
@@ -90,9 +95,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
     public void draw(Graphics g){
 
-        for(int i = 0; i < boarsWidth/tileSize; i++){
+        for(int i = 0; i < boardWidth/tileSize; i++){
             g.drawLine(i*tileSize, 0,i*tileSize, boardHeight);
-            g.drawLine(0, i*tileSize, boarsWidth, i*tileSize);
+            g.drawLine(0, i*tileSize, boardWidth, i*tileSize);
         }
             //draw sanke Head
         g.setColor(Color.green);
@@ -114,7 +119,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     }
 
     public void placeFood(){
-        food.x= random.nextInt(boarsWidth/tileSize);
+        food.x= random.nextInt(boardWidth/tileSize);
         food.y=random.nextInt(boardHeight/tileSize);
     }
 
@@ -146,6 +151,18 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         //snake HEad
         snakeHead.x += velocityX;
         snakeHead.y += velocityY;
+
+        for(int i = 0; i< snakeBody.size(); i++){
+            Tile snakePart = snakeBody.get(i);
+
+            if(collision(snakeHead, snakePart)){
+                gameOver=true;
+            }
+            if(snakeHead.x*tileSize<0 || snakeHead.x*tileSize > boardWidth ||
+                snakeHead.y*tileSize<0 || snakeHead.y*tileSize >boardHeight){
+                gameOver =true;
+            }
+        }
     }
 
     @Override
