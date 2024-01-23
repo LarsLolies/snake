@@ -8,6 +8,9 @@ public class Main {
 
         JFrame frame = new JFrame("Sanke");
         setFrame(frame);
+        SnakeGame snakeGame = new SnakeGame(boardWidth, boardHight);
+        frame.add(snakeGame);
+        frame.pack();
 
 
     }
