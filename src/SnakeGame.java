@@ -8,11 +8,12 @@ import javax.swing.*;
 public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(gameOver){
+        gameLoop.stop();
+        }
         move();
         repaint();
-        if(gameOver){
-            gameLoop.stop();
-        }
+
     }
 
     @Override
@@ -95,26 +96,40 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
     public void draw(Graphics g){
 
-        for(int i = 0; i < boardWidth/tileSize; i++){
-            g.drawLine(i*tileSize, 0,i*tileSize, boardHeight);
-            g.drawLine(0, i*tileSize, boardWidth, i*tileSize);
-        }
+//        for(int i = 0; i < boardWidth/tileSize; i++){
+//            g.drawLine(i*tileSize, 0,i*tileSize, boardHeight);
+//            g.drawLine(0, i*tileSize, boardWidth, i*tileSize);
+//        }
             //draw sanke Head
         g.setColor(Color.green);
-        g.fillRect(snakeHead.x*tileSize, snakeHead.y*tileSize, tileSize, tileSize);
+//        g.fillRect(snakeHead.x*tileSize, snakeHead.y*tileSize, tileSize, tileSize);
+        g.fill3DRect(snakeHead.x*tileSize, snakeHead.y*tileSize, tileSize, tileSize, true);
 
             //draw Snake Body
-        for(int i =0; i< snakeBody.size(); i++){
-            Tile snakePart= snakeBody.get(i);
-            g.fillRect(snakePart.x*tileSize, snakePart.y *tileSize, tileSize, tileSize );
+        for(int i =0; i< snakeBody.size(); i++) {
+            Tile snakePart = snakeBody.get(i);
+//            g.fillRect(snakePart.x*tileSize, snakePart.y *tileSize, tileSize, tileSize );
+            g.fill3DRect(snakePart.x * tileSize, snakePart.y * tileSize, tileSize, tileSize, true);
         }
+            //Score
+            g.setFont(new Font("Arial", Font.PLAIN, 16));
+            if(gameOver) {
+                g.setFont(new Font("Arial", Font.PLAIN, 50));
+                g.setColor(Color.red);
+                g.drawString("Game Over: " + String.valueOf(snakeBody.size()), 170, 380);
+            }
+            else{
+                g.drawString("Score: " + String.valueOf(snakeBody.size()), tileSize-16, tileSize);
+            }
+
 
 
 
         //draw food
 
         g.setColor(Color.red);
-        g.fillRect(food.x*tileSize, food.y*tileSize, tileSize, tileSize);
+//        g.fillRect(food.x*tileSize, food.y*tileSize, tileSize, tileSize);
+        g.fill3DRect(food.x*tileSize, food.y*tileSize, tileSize, tileSize, true);
 
     }
 
