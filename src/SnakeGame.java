@@ -1,5 +1,6 @@
 import java.awt.*;
 import  java.awt.event.*;
+import java.util.ArrayList;
 import java.util.ArrayList.*;
 import java.util.Random;
 import javax.swing.*;
@@ -44,7 +45,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     int boardHeight;
     int tileSize=25;
 
+    //snake
     Tile snakeHead;
+    ArrayList<Tile> snakeBody;
 
     Tile food;
 
@@ -65,6 +68,8 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
 
      this.snakeHead = new Tile(5,5);
+     this.snakeBody = new ArrayList<Tile>();
+
      this.food = new Tile(10, 10);
      random = new Random();
      placeFood();
@@ -89,9 +94,17 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
             g.drawLine(i*tileSize, 0,i*tileSize, boardHeight);
             g.drawLine(0, i*tileSize, boarsWidth, i*tileSize);
         }
-            //draw sanke
+            //draw sanke Head
         g.setColor(Color.green);
         g.fillRect(snakeHead.x*tileSize, snakeHead.y*tileSize, tileSize, tileSize);
+
+            //draw Snake Body
+        for(int i =0; i< snakeBody.size(); i++){
+            Tile snakePart= snakeBody.get(i);
+            g.fillRect(snakePart.x*tileSize, snakePart.y *tileSize, tileSize, tileSize );
+        }
+
+
 
         //draw food
 
@@ -105,7 +118,32 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         food.y=random.nextInt(boardHeight/tileSize);
     }
 
+    public boolean collision(Tile tile1, Tile tile2){
+        return tile1.x == tile2.x && tile1.y == tile2.y;
+    }
+
     public void move(){
+        if(collision(snakeHead, food)){
+            snakeBody.add(new Tile(food.x, food.y));
+            placeFood();
+        }
+
+        //snake body
+        for(int i = snakeBody.size()-1; i>= 0; i--){
+            Tile snakePart= snakeBody.get(i);
+            if(i==0){
+                snakePart.x= snakeHead.x;
+                snakePart.y=snakeHead.y;
+            }
+            else{
+                Tile prevSnakePart = snakeBody.get(i-1);
+                snakePart.x =prevSnakePart.x;
+                snakePart.y =prevSnakePart.y;
+            }
+        }
+
+
+        //snake HEad
         snakeHead.x += velocityX;
         snakeHead.y += velocityY;
     }
